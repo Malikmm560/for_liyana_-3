@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&display=swap" rel="stylesheet">  
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Your existing styles... */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #b24592, #8f44ad); /* Darker rose and purple gradient */
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Lobster', cursive;
+            font-size: 4em;
+            margin-bottom: 20px;
+            color: #ffdd57;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .slide-button {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 300px;
+            padding: 10px;
+            border: 2px solid #333;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            background-color: #333;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .slide-text {
+            font-size: 1em;
+            font-family: 'Lobster', cursive;
+            color: #ffffff;
+            position: absolute;
+            left: 110px;
+            opacity: 0;
+            transform: translateX(-100px);
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+
+        /* Slide text into view when button is clicked */
+        .slide-text.active {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        /* Pop-up styles */
+        .popup {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgb(255, 255, 255);
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            font-size: 48px; /* Large text */
+            color: #333;
+            z-index: 1000; /* Ensure it is on top */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .popup.show {
+            display: block; /* Show when active */
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none; /* Hidden by default */
+            z-index: 999; /* Behind the pop-up */
+        }
+
+        .overlay.show {
+            display: block; /* Show when active */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>I LOVE LIYANA</h1>
+
+        <div class="button-container">
+            <div class="slide-button">
+                <button onclick="handleButtonClick(1);"><a style="font-size: large;">?</a></button>
+                <p id="text1" class="slide-text">I LOVE YOU SO MUCH</p>
+            </div>
+
+            <div class="slide-button">
+                <button onclick="handleButtonClick(2);"><a style="font-size: large;">?</a></button>
+                <p id="text2" class="slide-text">I always will ❤️</p>
+            </div>
+
+            <div class="slide-button">
+                <button onclick="handleButtonClick(3);"><a style="font-size: large;">?</a></button>
+                <p id="text3" class="slide-text">You're my forever.</p>
+            </div>
+        </div>
+
+        <!-- Hidden Audio Elements -->
+        <audio id="audio1" src="meow_jEHtSyd.mp3"></audio>
+        <audio id="audio2" src="meow2.mp3"></audio>
+        <audio id="audio3" src="the-end-meow-by-nekocat-just-3-second-1.mp3"></audio>
+
+        <!-- Overlay for pop-up -->
+        <div class="overlay" id="overlay"></div>
+        <div class="popup" id="popup">:3</div>
+    </div>
+
+    <script>
+        let clickedButtons = new Set(); // Track clicked buttons
+
+        function slideText(number) {
+            const text = document.getElementById(`text${number}`);
+            text.classList.toggle("active");
+        }
+
+        function playAudio(audioFile) {
+            // Stop all audio
+            const audios = document.querySelectorAll('audio');
+            audios.forEach(audio => {
+                audio.pause(); // Pause any playing audio
+                audio.currentTime = 0; // Reset audio playback
+            });
+
+            // Play the selected audio
+            const audio = document.querySelector(`audio[src="${audioFile}"]`);
+            if (audio) {
+                audio.play();
+            }
+        }
+
+        function showPopup() {
+            const popup = document.getElementById('popup');
+            const overlay = document.getElementById('overlay');
+            popup.classList.add('show');
+            overlay.classList.add('show');
+
+            // Hide the popup and overlay after 2 seconds
+            setTimeout(() => {
+                popup.classList.remove('show');
+                overlay.classList.remove('show');
+            }, 2000);
+        }
+
+        function handleButtonClick(buttonNumber) {
+            slideText(buttonNumber); // Slide text for the button clicked
+            clickedButtons.add(buttonNumber); // Add the clicked button to the set
+
+            // Play the corresponding audio
+            switch (buttonNumber) {
+                case 1:
+                    playAudio('meow_jEHtSyd.mp3');
+                    break;
+                case 2:
+                    playAudio('meow2.mp3');
+                    break;
+                case 3:
+                    playAudio('the-end-meow-by-nekocat-just-3-second-1.mp3');
+                    break;
+            }
+
+            // Show the pop-up only if all buttons have been clicked
+            if (clickedButtons.size === 3) {
+                showPopup();
+            }
+        }
+    </script>
+</body>
+</html>
